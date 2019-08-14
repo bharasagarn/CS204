@@ -81,6 +81,7 @@ void check(vector<char>& seq)
 	}
 	if(i==n && mods==0 && stack.size()==0) cout << "YES" << endl;
 	else cout << "NO" << endl;
+	stack.clear();
 }
 
 int main()
