@@ -22,34 +22,37 @@ void AddFirst(loo x, loo y) {
 		head = newNode;
 }
 
-loo DelFirst() {
-	if(head==NULL) return -1;
+void DelFirst() {
+	if(head==NULL) cout << -1 << endl;
 	else {
 		node* temp = head;
 		head = head->next;
 		temp->next=NULL;
 		delete temp;
-		return 0;
 	}
 }
 
-loo Del(loo x, loo y) {
-	if(head==NULL) return -1;
+void Del(loo x, loo y) {
+	loo bin = 0;
+	if(head==NULL) {
+		bin=-1;
+		cout << -1 << endl;
+	}
 	else {
 		node* temp = head;
 		if(temp->X==x && temp->Y==y) {
+			bin = 1;
 			DelFirst();
-			return 0;
 		}
 		else {
 			node * prev = head;
 			temp = head->next;
 			while(temp!=NULL) {
 				if(temp->X==x && temp->Y==y) {
+					bin = 1;
 					prev->next=temp->next;
 					temp->next=NULL;
 					delete temp;
-					return 0;
 				}
 				else {
 					prev = temp;
@@ -58,40 +61,52 @@ loo Del(loo x, loo y) {
 			}
 		}
 	}
-	return -1;
+	if(bin==0) cout << -1 << endl;
 }
 
-vector<int> points[2];
-int search(float d)
+void search(float d)
 {
-	if(head==NULL) return -1;
+	loo c = 0;
+	loo bin = 0;
+	if(head==NULL){
+		bin = -1;
+		cout << -1 << endl;
+	}
 	else {
 		node* temp = head;
 		while(temp!=NULL) {
 			float dist = sqrt((temp->X*temp->X) + (temp->Y*temp->Y));
 			if(dist<=d) {
-				points[0].push_back(temp->X);
-				points[1].push_back(temp->Y);
+				bin = 1;
+				c++;
 				temp = temp->next;
 			}
 			else temp=temp->next;
 		}
 	}
-	if(points[0].size()==0) return -1;
+	if(bin==0) cout << -1 << endl;
+	if(bin==1) cout << c << endl;
 }
 
-loo search(loo x, loo y)
+void search(loo x, loo y)
 {
-	if(head==NULL) return -1;
+	loo bin = 0;
+	if(head==NULL) {
+		bin = -1;
+		cout << "False";
+	}
 	else {
 		node* temp = head;
 		while(temp!=NULL) {
-			if(temp->X==x && temp->Y==y) return 0;
+			if(temp->X==x && temp->Y==y) {
+				bin = 1;
+				cout << "True" << endl;
+				break;
+			}
 			else temp=temp->next;
 		}
-		return -1;
 	}
-	return -1;
+	if(bin==0) cout << "False" << endl;
 }
 
 loo length()
@@ -134,29 +149,16 @@ int main()
 	for(loo i=0; i<n; i++) {
 		if(funcs[i]==1) AddFirst(coords[i][0], coords[i][1]);
 		else if(funcs[i]==2) {
-			int a = DelFirst();
-			cout << a << endl;
+			DelFirst();
 		}
 		else if(funcs[i]==3) {
-			int a = Del(coords[i][0],coords[i][1]);
-			cout << a << endl;
+			Del(coords[i][0],coords[i][1]);
 		}
 		else if(funcs[i]==4) {
-			int a = search(coords[i][0]);
-			if(a==-1) cout << a << endl;
-			else {
-				while(!points[0].empty()) {
-					cout << "(" << points[0].back() << "," << points[1].back() << ")" << " ";
-					points[0].pop_back();
-					points[1].pop_back();
-				}
-				cout << endl;
-			}
+			search(coords[i][0]);
 		}
 		else if(funcs[i]==5) {
-			int a = search(coords[i][0],coords[i][1]);
-			if(a==0) cout << "True" << endl;
-			else cout << "False" << endl;
+			search(coords[i][0],coords[i][1]);
 		}
 		else if(funcs[i]==6) {
 			cout << length() << endl;
