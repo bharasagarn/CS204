@@ -5,7 +5,7 @@ typedef long long int loo;
 #define MAX 1000
 #define EMPTY -1
 
-loo find(vector<char> a, char e)
+loo find(vector<string> a, string e)
 {
 	loop(i,0,a.size()) {
 		if(a[i]==e) return i;
@@ -13,8 +13,7 @@ loo find(vector<char> a, char e)
 	return -1;
 }
 
-loo num(char c)
-{
+loo num(char c) {
 	return ( (loo)(c) - (loo)'0' );
 }
 
@@ -54,7 +53,29 @@ loo prec(char c)
     return -1;
 }
 
-void toPostfix(string s, vector<char> var, vector<loo> var_val ,vector<string>& post)
+bool isOperator(string c)
+{
+    if (c == "+" || c == "-" ||
+            c == "*" || c == "/" ||
+            c == "^")
+        return true;
+    return false;
+}
+
+loo isAssgn(string s) {
+	loo t = -1;
+	loo i= 0;
+	while(i<s.size()) {
+		if(s[i]=='=') {
+			t = i;
+			break;
+		}
+		i++;
+	}
+	return t;
+}
+
+bool toPostfix(string s, vector<string> var, vector<loo> var_val ,vector<string>& post)
 {
 	stack<char> st;
     st.push('N');
@@ -73,10 +94,12 @@ void toPostfix(string s, vector<char> var, vector<loo> var_val ,vector<string>& 
         	post.push_back(toString(p));
         }
         else if(isalpha(s[i])) {
-        	loo pos = find(var, s[i]);
-        	// if(pos==-1) {}
+        	loo j = i;
+        	while(!isOperator(cToString(s[j])) && j!=s.size()) j++;
+        	loo pos = find(var, s.substr(i,j-i));
+        	if(pos==-1) return false;
         	post.push_back(toString(var_val[pos]));
-        	i++;
+        	i=j;
         }
         else if(s[i] == '(') {
         	if(s[i+1]=='-') {
@@ -122,7 +145,6 @@ void toPostfix(string s, vector<char> var, vector<loo> var_val ,vector<string>& 
             st.push(s[i]);
             i++;
         }
-
     }
     while(st.top() != 'N')
     {
@@ -130,21 +152,13 @@ void toPostfix(string s, vector<char> var, vector<loo> var_val ,vector<string>& 
         st.pop();
         post.push_back(cToString(c));
     }
+    return true;
 }
 
 typedef struct tree {
 	string value;
 	tree* left, *right;
 } node;
-
-bool isOperator(string c)
-{
-    if (c == "+" || c == "-" ||
-            c == "*" || c == "/" ||
-            c == "^")
-        return true;
-    return false;
-}
 
 node* newNode(string s)
 {
@@ -224,43 +238,40 @@ int main()
 		}
 	}
 	loop(i,0,q) {
-		vector<char> var;
+		vector<string> var;
 		vector<loo> var_val;
 		loop(j,0,n[i]) {
 			vector<string> p;
-			if(isalpha(a[i][j][0])) {
-				if(a[i][j].size()==1) {
-					loo pos = find(var,a[i][j][0]);
-					if(pos==-1) cout << "CANT BE EVALUATED" <<	endl;
-					else cout << var_val[pos] << endl;
-				}
-				else if(a[i][j][1]=='=') {
-					loo pos = find(var, a[i][j][0]);
-					if(pos==-1) {
-						var.push_back(a[i][j][0]);
-						string li = a[i][j].substr(2,a[i][j].size()-1);
-						toPostfix(li, var, var_val, p);
+			if(isalpha(a[i][j][0]) && isAssgn(a[i][j])!=-1) {
+				loo pos = find(var, a[i][j].substr(0,isAssgn(a[i][j])));
+				if(pos==-1) {
+					var.push_back(a[i][j].substr(0,isAssgn(a[i][j])));
+					string li = a[i][j].substr(isAssgn(a[i][j])+1,a[i][j].size()-isAssgn(a[i][j])-1);
+					if(toPostfix(li, var, var_val, p)) {
 						node* exTree = constructTree(p);
 						var_val.push_back(solve(exTree));
 					}
 					else {
-						string li = a[i][j].substr(2,a[i][j].size()-1);
-						toPostfix(li, var, var_val, p);
-						node* exTree = constructTree(p);
-						var_val[pos] = solve(exTree);
+						var.pop_back();
+						cout << "CANT BE EVALUATED" << endl;
 					}
 					
 				}
 				else {
-				toPostfix(a[i][j],var, var_val, p);
-				node* exTree = constructTree(p);
-				cout << solve(exTree) << endl;
+					string li = a[i][j].substr(isAssgn(a[i][j])+1,a[i][j].size()-isAssgn(a[i][j])-1);
+					if(toPostfix(li, var, var_val, p)) {
+						node* exTree = constructTree(p);
+						var_val[pos] = solve(exTree);
+					}
+					else cout << "CANT BE EVALUATED" << endl;	
 				}
 			}
 			else {
-				toPostfix(a[i][j],var, var_val, p);
-				node* exTree = constructTree(p);
-				cout << solve(exTree) << endl;
+				if(toPostfix(a[i][j], var, var_val, p)) {
+					node* exTree = constructTree(p);
+					cout << solve(exTree) << endl;
+				}
+				else cout << "CANT BE EVALUATED" << endl;
 			}
 		}
 	}
