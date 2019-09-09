@@ -48,7 +48,16 @@ int main()
         }
         loop(i,0,n) a[i].ff = extend(a[i].ss,M);
         sort(a.begin(), a.end());
-        loop(i,n,0) cout << a[i].ss;
+        loop(i,n,0) {
+            if(i>0 && a[i].ff==a[i-1].ff) {
+                if(a[i].ss[a[i].ss.size()-1]<a[i-1].ss[a[i-1].ss.size()-1]) {
+                    string temp = a[i-1].ss;
+                    a[i-1].ss = a[i].ss;
+                    a[i].ss = temp;
+                }
+            }
+            cout << a[i].ss;
+        }
         cout << endl;
     }
 
