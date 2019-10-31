@@ -1,0 +1,21 @@
+You are required to implement these data structures
+1. Stacks
+2. Queues
+3. Linked Lists
+4. Trees
+   a. Binary Trees
+   b. Binary Search Trees
+   c. Balanced Binary Search Trees
+   d. Trees with Variable arity (Implement BFS and DFS on them)
+5. Graphs
+   a. BFS and  DFS
+   b. Shortest Path
+   c. All pair shortest path
+   d. Minimal Spanning trees
+6. Hash Tables
+7. Treap
+8. Disjoint Set- Union Find
+
+You may implement them any time BEFORE your endsem and get it vouched by your TA that you have understood and  implemented the above mentioned
+problems.
+
