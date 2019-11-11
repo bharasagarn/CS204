@@ -152,6 +152,7 @@ int main()
             treaproot = insertKey(treaproot,k);
             cout << "New key inserted successfully." << endl;
         }
+        else cout << "Invalid operation!!" << endl;
     }
 
 	return 0;
